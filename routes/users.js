@@ -14,11 +14,11 @@ const db = mysql.createConnection({
 
 })
 
-router.post('register',async (req,res) => {
+router.post('/register',async (req,res) => {
     const {email,password,firstname,lastname,birthdate } = req.body;
     const hashedPassword = await bcrypt.hash(password,10);
 
-    const sql =' INSERT INTO users (email,password,fistname,lastname,birthdate) VALUE (?,?,?,?,?) ';
+    const sql =' INSERT INTO users (email,password,firstname,lastname,birthdate) VALUE (?,?,?,?,?) ';
     db.query(sql,[email,hashedPassword,firstname,lastname,birthdate], (err,result) =>{
         if (err) {
             return res.status(500).send(err);
@@ -26,6 +26,41 @@ router.post('register',async (req,res) => {
         res.status(201).send({message: 'Utilisateur créé'})
     })
 })
+
+router.post('/login', async (req,res) => {
+    const {email,password } = req.body;
+
+    const sql = 'SELECT * FROM users WHERE email = ?'
+   
+    db.query(sql,[email,password], async (err,results) =>{
+        const user = results[0];
+
+
+        if (results.length === 0 || !(await bcrypt.compare(password, user.password))) {
+
+            return res.status(500).send({ message: 'mdp incorrect', user: await bcrypt.compare(password, user.password), password :password, passs: user.password });
+
+        }
+        const token = jwt.sign(
+            {
+                id: user.id,
+                email: user.email,
+                role: user.role,
+                lastname: user.lastname,
+                firstname: user.firstname,
+                birthdate: user.birthdate
+
+            },
+            process.env.TOKEN_SECRET, 
+            { expiresIn: '1h' }
+        );
+        res.status(200).json({
+
+            message: 'Utilisateur connecté', token: token
+        });
+    })
+})
+
 
 
 
