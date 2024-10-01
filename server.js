@@ -28,7 +28,11 @@ db.connect((err) => {
     }
 })
 
+
+const profilRoutes = require('./routes/profiles');
 const userRoutes = require('./routes/users');
+
+app.use('/api/profiles', profilRoutes)
 app.use('/api/users', userRoutes)
 
 const port = process.env.PORT || 3000;
