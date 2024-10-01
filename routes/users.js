@@ -1,8 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const mysql = require('mysql2');
-require('dotenv').config();
 
 const jwt = require('jsonwebtoken')
 
@@ -14,6 +14,9 @@ const db = mysql.createConnection({
 
 })
 
+//--------------------- CRUD user (create, read, update, delete)
+
+//create
 router.post('/register',async (req,res) => {
     const {email,password,firstname,lastname,birthdate } = req.body;
     const hashedPassword = await bcrypt.hash(password,10);
@@ -27,6 +30,64 @@ router.post('/register',async (req,res) => {
     })
 })
 
+//delete
+router.post('/eraseUser/:id', (req, res) => {
+
+    const idUser = req.params.id
+    
+    const sql = 'DELETE FROM users WHERE id_user = ?';
+
+    db.query(sql, [idUser], (err,result) =>{
+        if(err){
+            return res.status(500).send(err)
+        }
+        else{
+            res.status(201).json({
+                message: 'Utilisateur effacé'
+            })
+        }
+
+    })
+})
+
+//update
+router.post ('/modifyUser/:id', (req, res) => {
+
+    const idUser = req.params.id
+
+    const { email, password, firstname, lastname, birthdate } = req.body;
+
+    const sql = 'UPDATE users SET email = ?, password = ?, firstname = ?, lastname = ?, birthdate = ? WHERE id_user = ?';
+
+    db.query(sql, [email, password, firstname, lastname, birthdate, idUser], (err,result) =>{
+        if(err){
+            return res.status(500).send(err)
+        }
+        else{
+            res.status(201).json({
+                message: 'Utilisateur modifié'
+            })
+        }
+    })
+})
+
+//read
+router.get('/listUser', (req, res) =>{
+    
+    const sql = 'SELECT * FROM users';
+    db.query(sql, (err, results) =>{
+        if(err){
+            return res.status(500).send(err);
+        }
+        else{
+            res.status(200).json(results); 
+        }
+    })
+})
+
+//-------------------------------------------- 
+
+// Login / connexion
 router.post('/login', async (req,res) => {
     const {email,password } = req.body;
 
@@ -34,7 +95,6 @@ router.post('/login', async (req,res) => {
    
     db.query(sql,[email,password], async (err,results) =>{
         const user = results[0];
-
 
         if (results.length === 0 || !(await bcrypt.compare(password, user.password))) {
 
@@ -60,6 +120,9 @@ router.post('/login', async (req,res) => {
         });
     })
 })
+
+
+
 
 
 
