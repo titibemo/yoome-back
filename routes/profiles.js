@@ -15,6 +15,7 @@ const db = mysql.createConnection({
 
 //create
 router.post('/createProfil', async (req,res) => {
+
     const addDate = await date();
     const {
         description,
@@ -24,11 +25,11 @@ router.post('/createProfil', async (req,res) => {
         sexual_preference,
         display_profil,
         premium,
-        id_user
+        id_profil
     } = req.body;
 
     const sql =' INSERT INTO profiles (description, localisation, gender, selfie, sexual_preference, display_profil, created_at, premium, id_user) VALUE (?,?,?,?,?,?,?,?,?)';
-    db.query(sql,[description, localisation, gender, selfie, sexual_preference, display_profil, addDate, premium, id_user], (err,result) =>{
+    db.query(sql,[description, localisation, gender, selfie, sexual_preference, display_profil, addDate, premium, id_profil], (err,result) =>{
         if (err) {
             return res.status(500).send(err);
         }
