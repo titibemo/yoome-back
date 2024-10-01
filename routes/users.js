@@ -98,7 +98,7 @@ router.post('/login', async (req,res) => {
 
         if (results.length === 0 || !(await bcrypt.compare(password, user.password))) {
 
-            return res.status(500).send({ message: 'mdp incorrect', user: await bcrypt.compare(password, user.password), password :password, passs: user.password });
+            return res.status(500).send({ message: 'mdp incorrect' });
 
         }
         const token = jwt.sign(
