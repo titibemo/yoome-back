@@ -32,10 +32,12 @@ db.connect((err) => {
 const profilRoutes = require('./routes/profiles');
 const userRoutes = require('./routes/users');
 const personalizationsRoutes = require('./routes/personalizations');
+const likesRoutes = require('./routes/likes');
 
 app.use('/api/users', userRoutes)
 app.use('/api/profiles', profilRoutes)
 app.use('/api/personalizations', personalizationsRoutes)
+app.use('/api/likes', likesRoutes)
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
