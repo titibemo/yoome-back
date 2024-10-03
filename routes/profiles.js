@@ -1,5 +1,25 @@
 require('dotenv').config();
 const express = require('express');
+//-----add
+
+const multer = require('multer')
+const path = require('path')
+
+
+var storage = multer.diskStorage({
+    destination: (req, file, callBack) => {
+        callBack(null, './uploads/')     // './uploads/' directory name where save the file
+    },
+    filename: (req, file, callBack) => {
+        callBack(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+    }
+})
+
+var upload = multer({
+    storage: storage
+});
+// FIN ADD------
+
 const router = express.Router();
 const mysql = require('mysql2');
 const date = require('./../services/frenchDate')
@@ -14,7 +34,7 @@ const db = mysql.createConnection({
 //--------------------- CRUD profils (create, read, update, delete)
 
 //create
-router.post('/createProfil', async (req,res) => {
+router.post('/createProfil', upload.single('image'), async (req,res) => {
 
     const addDate = await date();
     const {
@@ -28,35 +48,19 @@ router.post('/createProfil', async (req,res) => {
         id_profil
     } = req.body;
 
-    const sql =' INSERT INTO profiles (description, localisation, gender, selfie, sexual_preference, display_profil, created_at, premium, id_user) VALUE (?,?,?,?,?,?,?,?,?)';
-    db.query(sql,[description, localisation, gender, selfie, sexual_preference, display_profil, addDate, premium, id_profil], (err,result) =>{
-        if (err) {
-            return res.status(500).send(err);
-        }
-        res.status(201).send({message: 'profil créé'})
-    })
-})
+    if (!req.file) {
+        console.log("No file upload");
+    } else {
+        console.log(req.file.filename)
+        var imgsrc = req.file.filename
+        var insertData = "INSERT INTO test(pic)VALUES(?)"
+        db.query(insertData, [imgsrc], (err, result) => {
+            if (err) throw err
+            console.log("file uploaded")
+        })
+        res.send('Image Has been uploaded, please check your directory and mysql database....');
+    }
 
-//modify Profil (without created_at, id_user and premium)
-router.post('/modifyProfil/:id', (req,res) => {
-    const idUser = req.params.id
-
-    const {
-        description,
-        localisation,
-        gender,
-        selfie,
-        sexual_preference,
-        display_profil,
-    } = req.body;
-
-    const sql ='UPDATE profiles SET description = ?, localisation = ?, gender = ?, selfie = ?, sexual_preference = ?, display_profil = ? WHERE id_user = ?';
-    db.query(sql,[description, localisation, gender, selfie, sexual_preference, display_profil, idUser], (err,result) =>{
-        if (err) {
-            return res.status(500).send(err);
-        }
-        res.status(200).send({message: 'profil modifié'})
-    })
 })
 
 //delete profil (Must delete only profil, not profil + users)
