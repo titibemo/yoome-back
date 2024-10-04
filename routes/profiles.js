@@ -1,12 +1,11 @@
 require('dotenv').config();
 const express = require('express');
-//-----add
 
+//-----Upload
 const multer = require('multer')
 const path = require('path')
 
-
-var storage = multer.diskStorage({
+let storage = multer.diskStorage({
     destination: (req, file, callBack) => {
         callBack(null, './uploads/')     // './uploads/' directory name where save the file
     },
@@ -15,10 +14,10 @@ var storage = multer.diskStorage({
     }
 })
 
-var upload = multer({
+let upload = multer({
     storage: storage
 });
-// FIN ADD------
+// FIN Upload--------------------
 
 const router = express.Router();
 const mysql = require('mysql2');
@@ -37,30 +36,32 @@ const db = mysql.createConnection({
 router.post('/createProfil', upload.single('image'), async (req,res) => {
 
     const addDate = await date();
+    let imgsrc;
+
+    if (!req.file) {
+        imgsrc = ""
+    } else {
+        console.log(req.file.filename)
+        imgsrc = req.file.filename
+    }
+    
     const {
         description,
         localisation,
         gender,
-        selfie,
         sexual_preference,
         display_profil,
         premium,
-        id_profil
+        id_user
     } = req.body;
 
-    if (!req.file) {
-        console.log("No file upload");
-    } else {
-        console.log(req.file.filename)
-        var imgsrc = req.file.filename
-        var insertData = "INSERT INTO test(pic)VALUES(?)"
-        db.query(insertData, [imgsrc], (err, result) => {
-            if (err) throw err
-            console.log("file uploaded")
-        })
-        res.send('Image Has been uploaded, please check your directory and mysql database....');
-    }
-
+    const sql =' INSERT INTO profiles (description, localisation, gender, selfie, sexual_preference, display_profil, created_at, premium, id_user) VALUE (?,?,?,?,?,?,?,?,?)';
+    db.query(sql,[description, localisation, gender, imgsrc, sexual_preference, display_profil, addDate, premium, id_user], (err,result) =>{
+        if (err) {
+            return res.status(500).send(err);
+        }
+        res.status(201).send({message: 'profil créé'})
+    })
 })
 
 //delete profil (Must delete only profil, not profil + users)
