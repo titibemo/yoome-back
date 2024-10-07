@@ -33,11 +33,13 @@ const profilRoutes = require('./routes/profiles');
 const userRoutes = require('./routes/users');
 const personalizationsRoutes = require('./routes/personalizations');
 const likesRoutes = require('./routes/likes');
+const channelsRoutes = require('./routes/channels');
 
 app.use('/api/users', userRoutes)
 app.use('/api/profiles', profilRoutes)
 app.use('/api/personalizations', personalizationsRoutes)
 app.use('/api/likes', likesRoutes)
+app.use('/api/channels', channelsRoutes)
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
