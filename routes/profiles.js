@@ -46,6 +46,10 @@ router.post('/createProfil', upload.single('image'), async (req,res) => {
     }
     
     const {
+        children,
+        situation,
+        personality,
+        hobby,
         description,
         localisation,
         gender,
@@ -55,8 +59,8 @@ router.post('/createProfil', upload.single('image'), async (req,res) => {
         id_user
     } = req.body;
 
-    const sql =' INSERT INTO profiles (description, localisation, gender, selfie, sexual_preference, display_profil, created_at, premium, id_user) VALUE (?,?,?,?,?,?,?,?,?)';
-    db.query(sql,[description, localisation, gender, imgsrc, sexual_preference, display_profil, addDate, premium, id_user], (err,result) =>{
+    const sql =' INSERT INTO profiles (children, situation, personality, hobby, description, localisation, selfie, sexual_preference, display_profil, created_at, premium, id_user) VALUE (?,?,?,?,?,?,?,?,?,?,?,?)';
+    db.query(sql,[children, situation, personality, hobby, description, localisation,  imgsrc, sexual_preference, display_profil, addDate, premium, id_user], (err,result) =>{
         if (err) {
             return res.status(500).send(err);
         }
