@@ -33,7 +33,7 @@ const db = mysql.createConnection({
 //--------------------- CRUD profils (create, read, update, delete)
 
 //create
-router.post('/createProfil', upload.single('image'), async (req,res) => {
+router.post('/createProfil', upload.single('image'), async (req, res) => {
 
     const addDate = await date();
     let imgsrc;
@@ -44,7 +44,7 @@ router.post('/createProfil', upload.single('image'), async (req,res) => {
         console.log(req.file.filename)
         imgsrc = req.file.filename
     }
-    
+
     const {
         children,
         situation,
@@ -52,19 +52,16 @@ router.post('/createProfil', upload.single('image'), async (req,res) => {
         hobby,
         description,
         localisation,
-        gender,
         sexual_preference,
-        display_profil,
-        premium,
         id_user
     } = req.body;
 
-    const sql =' INSERT INTO profiles (children, situation, personality, hobby, description, localisation, selfie, sexual_preference, display_profil, created_at, premium, id_user) VALUE (?,?,?,?,?,?,?,?,?,?,?,?)';
-    db.query(sql,[children, situation, personality, hobby, description, localisation,  imgsrc, sexual_preference, display_profil, addDate, premium, id_user], (err,result) =>{
+    const sql = ' INSERT INTO profiles (children, situation, personality, hobby, description, localisation, selfie, sexual_preference, created_at, id_user) VALUE (?,?,?,?,?,?,?,?,?,?)';
+    db.query(sql, [children, situation, personality, hobby, description, localisation, imgsrc, sexual_preference, addDate, id_user], (err, result) => {
         if (err) {
             return res.status(500).send(err);
         }
-        res.status(201).send({message: 'profil créé'})
+        res.status(201).send({ message: 'profil créé' })
     })
 })
 
@@ -72,14 +69,14 @@ router.post('/createProfil', upload.single('image'), async (req,res) => {
 router.post('/eraseProfil/:id', (req, res) => {
 
     const idUser = req.params.id
-    
+
     const sql = 'DELETE FROM profiles WHERE id_user = ?';
 
-    db.query(sql, [idUser], (err,result) =>{
-        if(err){
+    db.query(sql, [idUser], (err, result) => {
+        if (err) {
             return res.status(500).send(err)
         }
-        else{
+        else {
             res.status(201).json({
                 message: 'Utilisateur effacé'
             })
@@ -92,20 +89,34 @@ router.post('/eraseProfil/:id', (req, res) => {
 router.get('/showProfil/:id', (req, res) => {
 
     const idUser = req.params.id
-    
+
     const sql = 'SELECT * FROM profiles WHERE id_user = ?';
 
-    db.query(sql, [idUser], (err,results) =>{
-        if(err){
+    db.query(sql, [idUser], (err, results) => {
+        if (err) {
             return res.status(500).send(err)
         }
-        else{
+        else {
             res.status(200).json(results);
         }
     })
 })
 
+router.get('/showProfil', (req, res) => {
 
+    const idUser = req.params.id
+
+    const sql = 'SELECT * FROM profiles order by id_profil desc ';
+
+    db.query(sql, [idUser], (err, results) => {
+        if (err) {
+            return res.status(500).send(err)
+        }
+        else {
+            res.status(200).json(results);
+        }
+    })
+})
 
 
 
