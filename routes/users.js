@@ -85,6 +85,19 @@ router.get('/listUser', (req, res) =>{
     })
 })
 
+router.post('/listUser/:id', (req, res) =>{
+    const idUser = req.params.id
+    const sql = 'SELECT * FROM users WHERE id_user = ?';
+    db.query(sql,[idUser], (err, results) =>{
+        if(err){
+            return res.status(500).send(err);
+        }
+        else{
+            res.status(200).json(results); 
+        }
+    })
+})
+
 //-------------------------------------------- 
 
 // Login / connexion
