@@ -50,21 +50,24 @@ const userRoutes = require('./routes/users');
 const personalizationsRoutes = require('./routes/personalizations');
 const likesRoutes = require('./routes/likes');
 const channelsRoutes = require('./routes/channels');
+const matchsRoutes = require('./routes/matchs');
+const messagesRoutes = require('./routes/messages');
 
 app.use('/api/users', userRoutes)
 app.use('/api/profiles', profilRoutes)
 app.use('/api/personalizations', personalizationsRoutes)
 app.use('/api/likes', likesRoutes)
 app.use('/api/channels', channelsRoutes)
+app.use('/api/matchs', matchsRoutes)
+app.use('/api/messages', messagesRoutes)
+
 
 const port = process.env.PORT || 3000;
 app.listen(port, '0.0.0.0' ,() => {
     console.log('SERVEUR DEMARRE')
 })
 
-
 const server = http.createServer(app);
-
 const websocketServer = new WebSocket.Server({ server });
 
 //Listen for WebSocket connections
@@ -89,26 +92,7 @@ websocketServer.on('connection', (socket) => {
     });
 });
 
-/*
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
-  });
-  */
- 
-  //@type   POST
-  //route for post data
-  /*
-  app.post("/uploading", upload.single('image'), (req, res) => {
-      if (!req.file) {
-          console.log("No file upload");
-      } else {
-          console.log(req.file.filename)
-          var imgsrc = 'http://127.0.0.1:3000/uploads/' + req.file.filename
-          var insertData = "INSERT INTO users_file(file_src)VALUES(?)"
-        //   db.query(insertData, [imgsrc], (err, result) => {
-        //       if (err) throw err
-        //       console.log("file uploaded")
-        //     })
-            res.send('Image Has been uploaded, please check your directory and mysql database....');
-      }
-  });*/
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+    console.log('SERVEUR DEMARRE')
+})
