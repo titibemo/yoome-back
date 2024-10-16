@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json())
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use(cors({ origin: "http://localhost:8080" }));
+app.use(cors({ origin: "http://10.0.1.87:8080" }));
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({
 //     extended: true
@@ -60,6 +60,12 @@ app.use('/api/likes', likesRoutes)
 app.use('/api/channels', channelsRoutes)
 app.use('/api/matchs', matchsRoutes)
 app.use('/api/messages', messagesRoutes)
+
+
+const port = process.env.PORT || 3000;
+app.listen(port, '0.0.0.0' ,() => {
+    console.log('SERVEUR DEMARRE')
+})
 
 const server = http.createServer(app);
 const websocketServer = new WebSocket.Server({ server });

@@ -55,11 +55,11 @@ router.post ('/modifyUser/:id', (req, res) => {
 
     const idUser = req.params.id
 
-    const { email, password, firstname, lastname, birthdate } = req.body;
+    const { email, password, firstname, lastname, birthdate,idLiked } = req.body;
 
-    const sql = 'UPDATE users SET email = ?, password = ?, firstname = ?, lastname = ?, birthdate = ? WHERE id_user = ?';
+    const sql = 'UPDATE users SET email = ?, password = ?, firstname = ?, lastname = ?, birthdate = ?, idLiked = ? WHERE id_user = ?';
 
-    db.query(sql, [email, password, firstname, lastname, birthdate, idUser], (err,result) =>{
+    db.query(sql, [email, password, firstname, lastname, birthdate, idUser, idLiked], (err,result) =>{
         if(err){
             return res.status(500).send(err)
         }
