@@ -10,11 +10,15 @@ const app = express();
 app.use(express.json())
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use(cors({ origin: "http://10.0.1.87:8080" }));
+app.use(cors({ origin: process.env.IP_ADDRESS }));
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({
 //     extended: true
 // }))
+
+console.log(process.env.IP_ADDRESS);
+
+
 
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -62,10 +66,10 @@ app.use('/api/matchs', matchsRoutes)
 app.use('/api/messages', messagesRoutes)
 
 
-const port = process.env.PORT || 3000;
-app.listen(port, '0.0.0.0' ,() => {
-    console.log('SERVEUR DEMARRE')
-})
+// const port = process.env.PORT || 3000;
+// app.listen(port, '0.0.0.0' ,() => {
+//     console.log('SERVEUR DEMARRE')
+// })
 
 const server = http.createServer(app);
 const websocketServer = new WebSocket.Server({ server });
