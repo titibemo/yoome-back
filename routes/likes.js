@@ -48,11 +48,6 @@ router.post('/addLikes', async (req,res) => {
 })
 
 function checkAlreadyLiked(id_user_liker, id_user_liked){
-/* seulement pour les test postman */
-id_user_liker = 1
-id_user_liked = 14
-/* fin test postman */
-
 
     //const sql = 'SELECT id_like FROM `likes` WHERE id_user_liker = ? AND id_user_liked = ?;';
     const sql = 'SELECT COUNT(*) AS count FROM likes WHERE id_user_liker = ? AND id_user_liked = ?;';
@@ -97,14 +92,9 @@ function checkCanLike(idUser){
 }
 
 function createChannel(id_user_liker, id_user_liked){
-    /* seulement pour les test postman */
-    id_user_liker = 3
-    id_user_liked = 1
-    /* fin test postman */
 
-
-    const sql = 'SELECT (SELECT COUNT(*) FROM likes WHERE id_user_liker = 3 AND id_user_liked = 1) + (SELECT COUNT(*) FROM likes WHERE id_user_liker = ? AND id_user_liked = ?) AS total_likes;'
-        db.query(sql, [id_user_liker, id_user_liked], (err, result) => {
+    const sql = 'SELECT (SELECT COUNT(*) FROM likes WHERE id_user_liker = ? AND id_user_liked = ?) + (SELECT COUNT(*) FROM likes WHERE id_user_liker = ? AND id_user_liked = ?) AS total_likes;'
+        db.query(sql, [id_user_liker, id_user_liked, id_user_liker, id_user_liked], (err, result) => {
             console.log('nomalement 2', result[0].total_likes);
                        
             if (err) {
