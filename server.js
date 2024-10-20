@@ -89,12 +89,50 @@ websocketServer.on('connection', (socket) => {
             }
         });
     });
+
+       // Écoute l'événement "typing"
+       socket.on('typing', (data) => {
+           console.log(data);
+        // Broadcast le statut de saisie à tous les clients sauf celui qui a envoyé
+        websocketServer.clients.forEach((client) => {
+            if (client !== socket && client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify({ typing: true, user: data.user }));
+            }
+        });
+    });
+
+    // Écoute l'événement "stop typing"
+    socket.on('stop typing', (data) => {
+        
+        websocketServer.clients.forEach((client) => {
+            if (client !== socket && client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify({ typing: false, user: data.user }));
+            }
+        });
+    });
+
+
+
+
+
+
+
     // Listen for WebSocket connection close events
     socket.on('close', () => {
         // Log a message when a client disconnects
         console.log('Client disconnected');
     });
+
+    socket.onerror = (error) => {
+        console.error('WebSocket erreur:', error);
+    };
+
+
+
+
 });
+
+
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
