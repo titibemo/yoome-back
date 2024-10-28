@@ -24,6 +24,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    - name: Action ESLint
+      uses: sibiraj-s/action-eslint@v3.0.1
     - run: npm ci
     - run: npm run build --if-present
     #- run: npm test
