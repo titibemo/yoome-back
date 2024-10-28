@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
   pull_request:
     branches: [ "main" ]
+    
 
 jobs:
   build:
@@ -18,8 +19,8 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - name: Conventional Commitlint
-      uses: opensource-nepal/commitlint@v1
+    - name: Conventional Commit       
+      uses: lab42/conventional-commit@v0.2.2
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
